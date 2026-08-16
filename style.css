@@ -1,0 +1,728 @@
+/* ============================================================
+   PORTFOLIO STYLESHEET
+   Organized in sections — use Ctrl/Cmd+F to jump to a section name.
+
+   QUICK EDIT GUIDE
+   - Colors: change the variables in ":root" below.
+   - Fonts: change the font-family variables in ":root" below.
+   - Section spacing/sizes: search for the section name (e.g. "HERO").
+============================================================ */
+
+
+/* ------------------------------------------------------------
+   1. DESIGN TOKENS — change colors & fonts here, site-wide
+------------------------------------------------------------ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: white;
+}
+
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: -1;
+}
+
+.hero-content {
+  position: relative;
+  text-align: center;
+  max-width: 700px;
+  z-index: 1;
+}
+
+.hero-tag {
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.hero-content h1 {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  margin-bottom: 16px;
+}
+
+.hero-content p {
+  font-size: 1.1rem;
+  margin-bottom: 24px;
+}
+
+.glow-btn {
+  display: inline-block;
+  position: relative;
+  padding: 14px 28px;
+  border-radius: 12px;
+  background: #111827;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border: 2px solid rgba(0, 255, 200, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 0 0 rgba(0, 255, 200, 0);
+  overflow: hidden;
+}
+
+.glow-btn {
+  display: inline-block;
+  padding: 14px 28px;
+  border-radius: 12px;
+  background: #fcfdfd;
+  color: rgb(1, 1, 1);
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 188, 212, 0.25);
+}
+
+.glow-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(0, 188, 212, 0.35),
+              0 0 25px rgba(0, 188, 212, 0.55);
+  background: #00d4ee;
+}
+
+.glow-btn:active {
+  transform: scale(0.98);
+}
+
+:root{
+  /* ✏️ COLORS */
+  --bg-void:      #0a0c13;   /* deepest background */
+  --bg-panel:     #0d1420;   /* card / panel background */
+  --bg-panel-2:   #0c0e11;   /* slightly lighter panel */
+  
+
+  --accent-cyan:   #45e8d4;  /* primary glow — buttons, headings, HUD */
+  --accent-violet: #8a7bff;  /* secondary glow — skill tree, links */
+  --accent-amber:  #ffb545;  /* status highlights */
+  --line:          rgba(255,255,255,0.12); /* shared hairline border used by cards/HUD */
+
+  --text-primary: #eef4f6;
+  --text-muted:   #93a5ae;
+  --text-faint:   #57707a;
+
+  /* ✏️ FONTS */
+  --font-display: "Orbitron", sans-serif;      /* headings, HUD titles */
+  --font-body:    "Inter", sans-serif;         /* paragraphs, UI text */
+  --font-mono:    "JetBrains Mono", monospace; /* labels, stats, HUD */
+
+  --radius: 14px;
+  --pad-section: clamp(24px, 6vw, 96px);
+}
+
+/* ------------------------------------------------------------
+   2. RESET & BASE
+------------------------------------------------------------ */
+*, *::before, *::after{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; }
+
+body{
+  margin: 0;
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img{ max-width: 100%; display: block; }
+
+a{ color: inherit; text-decoration: none; }
+
+h1, h2, h3{
+  font-family: var(--font-display);
+  margin: 0 0 0.4em;
+  letter-spacing: 0.02em;
+}
+
+p{ margin: 0 0 1em; color: var(--text-muted); }
+
+.skip-link{
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--accent-cyan);
+  color: #04121a;
+  padding: 10px 16px;
+  z-index: 999;
+}
+.skip-link:focus{ left: 12px; top: 12px; }
+
+
+/* ------------------------------------------------------------
+   3. HUD OVERLAY — fixed frame + scanline (the site's signature element)
+------------------------------------------------------------ */
+.hud{
+  position: fixed;
+  inset: 10px;
+  z-index: 50;
+  pointer-events: none;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+.hud-corner{
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--accent-cyan);
+  opacity: 0.7;
+}
+.hud-corner--tl{ top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.hud-corner--tr{ top: -1px; right: -1px; border-left: none; border-bottom: none; }
+.hud-corner--bl{ bottom: -1px; left: -1px; border-right: none; border-top: none; }
+.hud-corner--br{ bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+.hud-readout{
+  position: absolute;
+  top: 22px;
+  left: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--accent-cyan);
+  text-shadow: 0 0 8px rgba(69, 232, 212, 0.5);
+}
+
+.hud-dot{
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  box-shadow: 0 0 8px var(--accent-cyan);
+  flex: none;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%, 100%{ opacity: 1; }
+  50%{ opacity: 0.35; }
+}
+
+.hud-scan{
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  top: 0;
+  background: linear-gradient(90deg, transparent, rgba(69,232,212,0.5), transparent);
+  
+}
+@keyframes scan{
+  0%{ top: 0%; }
+  100%{ top: 100%; }
+}
+
+@media (max-width: 640px){
+  .hud-readout{ font-size: 10px; left: 20px; top: 16px; }
+  .hud{ inset: 6px; }
+}
+
+/* ------------------------------------------------------------
+   4. SCENE LAYOUT (shared by all sections)
+   All panels are now merged into one continuous, normal-flow
+   page — no more position: sticky / stacking / scroll-jacking.
+   Each .scene-wrap is just a regular block that sits below the
+   previous one, and the browser's native smooth scroll (see
+   html{ scroll-behavior: smooth } above) carries you between them.
+   - .scene-wrap  — plain wrapper, height determined by content
+     (min one viewport tall so each section still fills the screen).
+   - .scene       — the visual panel itself, no longer pinned.
+   min-height (rather than a fixed height) means a panel with more
+   content than fits in one screen simply grows and pushes the next
+   section down, instead of clipping or scrolling internally.
+------------------------------------------------------------ */
+.scene-wrap{
+  position: relative;
+  width: 100%;
+}
+
+.scene,
+.hero{
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* top padding clears the fixed HUD frame + corner readout;
+     bottom padding clears mobile home-indicator / safe area */
+  padding: clamp(72px, 13vh, 112px) 24px clamp(40px, 8vh, 64px);
+  padding-bottom: calc(clamp(40px, 8vh, 64px) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Distinct backgrounds per scene so the overlay/stack effect is
+   visible (identical backgrounds would make the stacking invisible) */
+.scene--about{
+  background:
+    radial-gradient(circle at 15% 15%, rgba(69,232,212,0.10), transparent 55%),
+    var(--bg-void);
+}
+.scene--skills{
+  background:
+    radial-gradient(circle at 85% 20%, rgba(138,123,255,0.12), transparent 55%),
+    var(--bg-void);
+}
+.scene--projects{
+  background:
+    radial-gradient(circle at 20% 85%, rgba(255,181,69,0.09), transparent 55%),
+    var(--bg-void);
+}
+.scene--contact{
+  background:
+    radial-gradient(circle at 50% 10%, rgba(69,232,212,0.12), transparent 60%),
+    var(--bg-void);
+}
+
+/* On shorter/narrower screens content is more likely to exceed the
+   viewport height — switch from centering to top-aligned so the
+   start of the content is always the part shown first, with the
+   rest reachable by scrolling inside the panel (never hidden). */
+@media (max-width: 780px), (max-height: 700px){
+  .scene, .hero{
+    align-items: flex-start;
+  }
+}
+
+.scene__inner{
+  max-width: 1100px;
+  width: 100%;
+}
+
+.scene__inner--center{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.eyebrow{
+  font-family: var(--font-mono);
+  color: var(--accent-violet);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.scene__title{
+  font-size: clamp(28px, 4vw, 44px);
+  color: var(--text-primary);
+}
+
+.scene__sub{
+  color: var(--text-muted);
+  margin-bottom: 40px;
+  max-width: 60ch;
+}
+
+/* ------------------------------------------------------------
+   5. HERO / START SCREEN
+------------------------------------------------------------ */
+.scene--hero{
+  text-align: center;
+  overflow: hidden;
+}
+
+.scene__bg{
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(138,123,255,0.18), transparent 55%),
+    radial-gradient(circle at 20% 80%, rgba(69,232,212,0.14), transparent 55%),
+    var(--bg-void);
+}
+
+.hero__content{
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.hero__title{
+  font-size: clamp(32px, 6vw, 64px);
+  font-weight: 900;
+  color: var(--text-primary);
+  text-shadow: 0 0 24px rgba(69, 232, 212, 0.25);
+}
+
+.hero__subtitle{
+  font-family: var(--font-mono);
+  color: var(--accent-cyan);
+  font-size: clamp(14px, 2vw, 18px);
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+}
+
+.hero__desc{
+  color: var(--text-muted);
+  max-width: 56ch;
+  margin: 0 auto 36px;
+}
+
+.hero__actions{
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.hero__hint{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+  letter-spacing: 0.1em;
+}
+
+/* Video-background buttons */
+.btn-video{
+  position: relative;
+  width: 220px;
+  height: 74px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  isolation: isolate;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-video__media{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  opacity: 0.55; /* keeps the effect subtle behind the text */
+}
+
+.btn-video__overlay{
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(5,7,13,0.55), rgba(5,7,13,0.8));
+}
+
+.btn-video__label{
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.btn-video:hover,
+.btn-video:focus-visible{
+  transform: translateY(-3px);
+  border-color: var(--accent-cyan);
+  box-shadow: 0 8px 30px rgba(69, 232, 212, 0.25);
+}
+
+/* Solid CTA button (used in contact section) */
+.btn-solid{
+  display: inline-block;
+  margin-top: 32px;
+  padding: 14px 32px;
+  border-radius: 10px;
+  background: var(--accent-cyan);
+  color: #04121a;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.btn-solid:hover, .btn-solid:focus-visible{
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(69,232,212,0.35);
+}
+
+/* ------------------------------------------------------------
+   6. ABOUT / PLAYER PROFILE
+------------------------------------------------------------ */
+.profile{
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.player-card{
+  background: linear-gradient(180deg, var(--bg-panel-2), var(--bg-panel));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+}
+
+.player-card__frame{
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  aspect-ratio: 4 / 5;
+}
+
+.player-card__img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.player-card__meta{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.player-card__tag{
+  color: var(--accent-violet);
+}
+
+.player-card__status{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-cyan);
+}
+
+.profile__name{ font-size: clamp(24px, 3vw, 32px); }
+
+.profile__role{
+  font-family: var(--font-mono);
+  color: var(--accent-cyan);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  margin-bottom: 18px;
+}
+
+.profile__stats{
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.stat{
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.stat__label{ color: var(--text-faint); font-family: var(--font-mono); font-size: 12px; }
+.stat__value{ color: var(--text-primary); text-align: right; }
+
+@media (max-width: 780px){
+  .profile{ grid-template-columns: 1fr; gap: 32px; }
+  .player-card{ max-width: 320px; margin: 0 auto; }
+}
+
+/* ------------------------------------------------------------
+   7. SKILLS / SKILL TREE
+------------------------------------------------------------ */
+.skill-tree{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.skill-node{
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.skill-node:hover{
+  border-color: var(--accent-violet);
+  transform: translateY(-2px);
+}
+
+.skill-node__top{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.skill-node__name{
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.skill-node__lvl{
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-amber);
+}
+
+.skill-node__bar{
+  height: 6px;
+  border-radius: 4px;
+  background: var(--bg-panel-2);
+  overflow: hidden;
+}
+
+.skill-node__fill{
+  display: block;
+  height: 100%;
+  width: 0%; /* animated to data-level value by script.js */
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
+  border-radius: 4px;
+}
+
+/* ------------------------------------------------------------
+   8. PROJECTS / MISSION LOG
+------------------------------------------------------------ */
+.mission-log{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.mission-card{
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.mission-card:hover{
+  border-color: var(--accent-cyan);
+  transform: translateY(-4px);
+}
+
+.mission-card__head{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.mission-card__id{
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  letter-spacing: 0.08em;
+}
+
+.mission-card__status{
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+.mission-card__status--done{ color: var(--accent-cyan); }
+.mission-card__status--progress{ color: var(--accent-amber); }
+.mission-card__status--planned{ color: var(--text-muted); }
+
+.mission-card__title{ font-size: 19px; color: var(--text-primary); }
+.mission-card__desc{ flex: 1; }
+.mission-card__tools{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+}
+.mission-card__link{
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent-violet);
+  margin-top: 10px;
+}
+.mission-card__link:hover{ color: var(--accent-cyan); }
+
+/* ------------------------------------------------------------
+   9. CONTACT / FINAL PORTAL
+------------------------------------------------------------ */
+.portal{
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  max-width: 420px;
+  margin-top: 10px;
+}
+
+.portal__link{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.portal__link:hover{
+  border-color: var(--accent-cyan);
+  transform: translateY(-2px);
+}
+
+.portal__label{
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent-violet);
+  letter-spacing: 0.06em;
+}
+.portal__value{ color: var(--text-primary); font-size: 14px; }
+
+.footer-note{
+  margin-top: 48px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+/* ------------------------------------------------------------
+   10. REDUCED MOTION — respected site-wide
+------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce){
+  *{
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
